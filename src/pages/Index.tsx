@@ -4,10 +4,11 @@ import Calendar from '@/components/Calendar';
 import VoiceInput from '@/components/VoiceInput';
 import EventModal from '@/components/EventModal';
 import { Button } from '@/components/ui/button';
-import { Plus, Calendar as CalendarIcon } from 'lucide-react';
+import { Plus, Calendar as CalendarIcon, Moon, Download } from 'lucide-react';
 import { CalendarEvent } from '@/types';
 import { useEvents } from '@/context/EventContext';
 import { EventProvider } from '@/context/EventContext';
+import { Toaster } from '@/components/ui/sonner';
 
 const Index = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -80,20 +81,33 @@ const AppContent = ({
   };
 
   return (
-    <div className="min-h-screen bg-purple-50">
-      <header className="bg-purple-600 text-white p-4 md:p-6">
+    <div className="min-h-screen bg-background text-foreground">
+      <header className="bg-gradient-to-r from-primary to-accent/70 text-white p-4 md:p-6 shadow-lg">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <CalendarIcon className="h-6 w-6" />
-            <h1 className="text-xl font-bold">Voice Calendar</h1>
+          <div className="flex items-center space-x-3">
+            <div className="bg-white/10 p-2 rounded-full backdrop-blur-sm">
+              <CalendarIcon className="h-6 w-6" />
+            </div>
+            <h1 className="text-xl font-bold glow">Voice Calendar</h1>
           </div>
-          <Button
-            variant="secondary"
-            className="bg-white text-purple-600 hover:bg-purple-100"
-            onClick={handleAddEvent}
-          >
-            <Plus className="h-4 w-4 mr-1" /> Add Event
-          </Button>
+          <div className="flex space-x-2">
+            <Button
+              variant="secondary"
+              className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/10"
+              onClick={handleAddEvent}
+            >
+              <Plus className="h-4 w-4 mr-1" /> Add Event
+            </Button>
+            <a 
+              href="https://capacitorjs.com/solution/android" 
+              target="_blank" 
+              rel="noopener noreferrer"
+            >
+              <Button variant="outline" className="text-white border-white/20 hover:bg-white/10">
+                <Download className="h-4 w-4 mr-1" /> Get App
+              </Button>
+            </a>
+          </div>
         </div>
       </header>
 
@@ -101,13 +115,25 @@ const AppContent = ({
         <div className="grid md:grid-cols-2 gap-6">
           <div className="flex flex-col space-y-6">
             <VoiceInput onRecognitionResult={handleVoiceResult} />
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h3 className="font-medium text-gray-900 mb-2">Voice Commands</h3>
-              <ul className="text-sm text-gray-600 space-y-2">
-                <li>• "Add meeting with John tomorrow at 2pm"</li>
-                <li>• "Schedule doctor appointment on Friday at 3pm"</li>
-                <li>• "Create team lunch next Monday at 12:30pm"</li>
-                <li>• "Add dentist visit on April 15th at 10am"</li>
+            <div className="glass-card rounded-xl p-4 shadow-lg border border-accent/20 glow-border">
+              <h3 className="font-medium text-primary mb-3">Voice Commands</h3>
+              <ul className="text-sm text-foreground/80 space-y-2">
+                <li className="flex items-start">
+                  <span className="text-accent mr-2">•</span>
+                  <span>"Add meeting with John tomorrow at 2pm"</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-accent mr-2">•</span>
+                  <span>"Schedule doctor appointment on Friday at 3pm"</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-accent mr-2">•</span>
+                  <span>"Create team lunch next Monday at 12:30pm"</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-accent mr-2">•</span>
+                  <span>"Add dentist visit on April 15th at 10am"</span>
+                </li>
               </ul>
             </div>
           </div>

@@ -4,23 +4,61 @@ interface SpeechRecognitionResult {
   isFinal: boolean;
 }
 
+// Define SpeechRecognition types for TypeScript
+interface SpeechRecognitionEvent {
+  results: SpeechRecognitionResultList;
+  resultIndex: number;
+}
+
+interface SpeechRecognitionResultList {
+  [index: number]: SpeechRecognitionResult;
+  length: number;
+}
+
+interface SpeechRecognitionResult {
+  [index: number]: SpeechRecognitionAlternative;
+  isFinal: boolean;
+  length: number;
+}
+
+interface SpeechRecognitionAlternative {
+  transcript: string;
+  confidence: number;
+}
+
+interface SpeechRecognition extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  start(): void;
+  stop(): void;
+  onresult: (event: SpeechRecognitionEvent) => void;
+  onerror: (event: any) => void;
+  onend: () => void;
+}
+
+// Add SpeechRecognition to the window interface
+declare global {
+  interface Window {
+    SpeechRecognition: new () => SpeechRecognition;
+    webkitSpeechRecognition: new () => SpeechRecognition;
+  }
+}
+
 export const startSpeechRecognition = (
-  onResult: (result: SpeechRecognitionResult) => void,
+  onResult: (result: { text: string; isFinal: boolean }) => void,
   onError?: (error: string) => void,
   onEnd?: () => void
 ): (() => void) => {
-  // This is a browser-based implementation
-  // For a native Android app, you would use the Android Speech Recognition API
-  
   // Check if browser supports speech recognition
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const SpeechRecognitionClass = window.SpeechRecognition || window.webkitSpeechRecognition;
   
-  if (!SpeechRecognition) {
+  if (!SpeechRecognitionClass) {
     if (onError) onError('Speech recognition not supported in this browser');
     return () => {};
   }
   
-  const recognition = new SpeechRecognition();
+  const recognition = new SpeechRecognitionClass();
   recognition.continuous = true;
   recognition.interimResults = true;
   recognition.lang = 'en-US';
@@ -59,6 +97,3 @@ export const startSpeechRecognition = (
     recognition.stop();
   };
 };
-
-// For Android app integrations, this would need to be replaced with
-// React Native's native module implementation or a Capacitor plugin
